@@ -1,11 +1,9 @@
 const express = require('express');
-const authenticateJWT = require('../../../services/v1/middleware/authenticate');
-const injectTokenPayload = require('../../../services/v1/middleware/injectTokenPayload');
-const userService = require('../../../services/v1/users/user');
+
+const isAuth = require('../../middleware/isAuth');
+const moduleService = require('../../services/v1/modules');
 let router = express.Router();
 
-router.post('/sign-in', userService.login);
-router.post('/sign-up', userService.verifyAccount);
+router.post('/get-modules',isAuth,moduleService.getAllModules);
 
-//require.post()
 module.exports = router;            

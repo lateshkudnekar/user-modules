@@ -1,6 +1,5 @@
 'use strict';
 //npm modules
-const { randomBytes} = require('crypto')
 // custom module import
 const models = require("../../../models");
 const argon2 = require('argon2');
@@ -44,7 +43,6 @@ const signIn = async (req, res) => {
 const signUp = async (req, res) => {
 
     const { username, password } = req.body;
-    const salt = randomBytes(32);
 
     try {
         const userRecord = await models.users.findOne({ where: { username: username} });

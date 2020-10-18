@@ -1,7 +1,6 @@
 
 const fs   = require('fs');
 const jwt  = require('jsonwebtoken');
-const b64 = require("base64url");
 let privateKEY  = fs.readFileSync(appRoot+'/keys/private.key', 'utf8');
 let publicKEY  = fs.readFileSync(appRoot+'/keys/public.key', 'utf8'); 
 

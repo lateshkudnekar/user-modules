@@ -2,6 +2,7 @@
 const models = require("../../../models");
 const argon2 = require('argon2');
 const { generateToken } = require('../../../utils/helpers');
+const { Sequelize } = require("../../../models");
 const signIn = async (req, res) => {
     try {
         const { username, password } = req.body;
@@ -55,7 +56,7 @@ const assignModule = async (req,res) => {
         }
     
         // query users and modues if nboth record are available
-        const userRecord = await models.users.findOne({ where: { id: userId } });
+        const userRecord = await models.users.findOne({ where: { id: userId , userType:'normal'} });
         if (!userRecord) {
             return res.status(500).json({
                 success: false,
@@ -75,7 +76,7 @@ const assignModule = async (req,res) => {
         if (usermoduleRecord) {
             return res.status(500).json({
                 success: false,
-                message: "modules already exists."
+                message: "module already assigned."
             })
         }
         const usermoduleLink = await models.user_modules.create({ userId,moduleId});
@@ -92,10 +93,93 @@ const assignModule = async (req,res) => {
         })
     }
    
+}
+const getAllModules = async (req,res) => {
+    try {
+        const modulesres = await models.modules.findAll();
+        return res.status(200).json({modules:modulesres})
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            success:false,
+            messageg:"somthing went wrong"
+        })
+    }
+}
 
+const listAllUsers = async (req,res) => {
+    try {
+        const modulesres = await models.users.findAll({
+            attributes:['id','username'],
+            where:{
+                userType:'normal',
+            },
+            include:[
+                {
+                    model:models.modules,
+                    attributes:['id','name'],
+                    as:"modules",
+                }
+            ]
+        });
+        return res.status(200).json({modules:modulesres})
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            success:false,
+            message:"somthing went wrong"
+        })
+    }
+}
 
+const unAssignModule = async (req,res) => {
+    try {
+        const { userId, moduleId } = req.body;
+        if(!userId) {
+            return res.status(500).json({ success: false, message: "User is required" })
+        }
+        if(!moduleId) {
+            return res.status(500).json({ success: false, message: "Module is required" })
+        }
+    
+        // query users and modues if nboth record are available
+        const userRecord = await models.users.findOne({ where: { id: userId , userType:'normal'} });
+        if (!userRecord) {
+            return res.status(500).json({
+                success: false,
+                message: "user does not exists."
+            })
+        }
+    
+        const moduleRecord = await models.modules.findOne({ where: { id: moduleId } });
+        if (!moduleRecord) {
+            return res.status(500).json({
+                success: false,
+                message: "modules is does not exists."
+            })
+        }
+    
+
+        const destroyLink = await models.user_modules.destroy({ where:{userId,moduleId}});
+        return res.status(200).json({
+            success: true,
+            message:"success",
+            data:{
+                module:destroyLink
+            }
+        })
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: "Somthing went wrong."
+        })
+    }
+   
 }
 module.exports ={
+    getAllModules,
     signIn,
-    assignModule
+    assignModule,
+    listAllUsers,
+    unAssignModule
 }

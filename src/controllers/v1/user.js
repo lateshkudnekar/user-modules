@@ -1,9 +1,9 @@
 const express = require('express');
 
 const isAuth = require('../../middleware/isAuth');
-const moduleService = require('../../services/v1/modules');
+const userService = require('../../services/v1/user');
 let router = express.Router();
 
-router.post('/get-modules',isAuth,moduleService.getUserModule);
+router.post('/get-modules',isAuth,userService.getUserModule);
 
 module.exports = router;            

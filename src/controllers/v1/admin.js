@@ -1,9 +1,12 @@
 const express = require('express');
 
-// const userService = require('../../../services/v1/users/user');
 let router = express.Router();
-const { signIn } = require("../../services/v1/admin")
+const adminService = require("../../services/v1/admin");
+const moduleService = require('../../services/v1/modules');
+const isAdmin = require('../../middleware/isAdmin');
 
-router.post('/sign-in', signIn);
+
+router.post('/sign-in', adminService.signIn);
+router.post('/get-all-modules', isAdmin, moduleService.getAllModules);
 
 module.exports = router;            

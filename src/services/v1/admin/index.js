@@ -1,5 +1,5 @@
 // custom module import
-const models = require("../../../models");l
+const models = require("../../../models");
 const argon2 = require('argon2');
 const { generateToken } = require('../../../utils/helpers');
 const signIn = async (req, res) => {

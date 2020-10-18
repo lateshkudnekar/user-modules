@@ -3,7 +3,7 @@ const { Sequelize } = require("sequelize");
 const models = require("../../../models");
 
 
-const getAllModules = async (req,res) => {
+const getUserModule = async (req,res) => {
     try {
         const {id} = req.user;
         const modulesres = await models.modules.findAll({
@@ -26,6 +26,20 @@ const getAllModules = async (req,res) => {
     }
 }
 
+const getAllModules = async (req,res) => {
+    try {
+        const modulesres = await models.modules.findAll();
+        return res.status(200).json({modules:modulesres})
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({
+            success:false,
+            messageg:"somthing went wrong"
+        })
+    }
+}
+
 module.exports = {
-    getAllModules
+    getUserModule,
+    getAllModules,
 }

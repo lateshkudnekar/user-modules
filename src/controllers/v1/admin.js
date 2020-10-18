@@ -8,5 +8,6 @@ const isAdmin = require('../../middleware/isAdmin');
 
 router.post('/sign-in', adminService.signIn);
 router.post('/get-all-modules', isAdmin, moduleService.getAllModules);
+router.post('/assign-module', isAdmin, adminService.assignModule);
 
 module.exports = router;            

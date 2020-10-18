@@ -1,10 +1,17 @@
 // custom module import
-const models = require("../../../models");
+const models = require("../../../models");l
 const argon2 = require('argon2');
 const { generateToken } = require('../../../utils/helpers');
 const signIn = async (req, res) => {
     try {
         const { username, password } = req.body;
+
+        if(!username || !password ) {
+            return res.status(500).json({
+                success: false,
+                message: "Please provide valid username and password"
+            })
+        }
         const userRecord = await models.users.findOne({ where: { username: username, userType: "admin" } });
         if (!userRecord) {
             return res.status(500).json({

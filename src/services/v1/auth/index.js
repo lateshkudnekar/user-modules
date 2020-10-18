@@ -1,12 +1,19 @@
 'use strict';
 //npm modules
+const argon2 = require('argon2');
 // custom module import
 const models = require("../../../models");
-const argon2 = require('argon2');
 const { generateToken } = require('../../../utils/helpers');
 const signIn = async (req, res) => {
     try {
         const { username, password } = req.body;
+        if (!username || !password) {
+            return res.status(500).json({
+                success: false,
+                message: "Please provide valid username and password"
+            })
+        }
+
         const userRecord = await models.users.findOne({ where: { username: username, userType: "normal" } });
         if (!userRecord) {
             return res.status(500).json({
@@ -20,12 +27,12 @@ const signIn = async (req, res) => {
         if (validPassword) {
             delete userRecord.password;
             const payload = {
-                id:userRecord.id,
-                username:userRecord.username,
-                userType:userRecord.userType
+                id: userRecord.id,
+                username: userRecord.username,
+                userType: userRecord.userType
             }
             const token = generateToken(payload);
-            return res.status(200).json({ success: true, data: { user:payload, token } });
+            return res.status(200).json({ success: true, data: { user: payload, token } });
 
         } else {
             return res.status(500).json({ success: false, message: "Invalid pasword" })
@@ -43,17 +50,22 @@ const signIn = async (req, res) => {
 const signUp = async (req, res) => {
 
     const { username, password } = req.body;
-
+    if (!username || !password) {
+        return res.status(500).json({
+            success: false,
+            message: "Please provide valid username and password"
+        })
+    }
     try {
-        const userRecord = await models.users.findOne({ where: { username: username} });
+        const userRecord = await models.users.findOne({ where: { username: username } });
         if (userRecord) {
             return res.status(500).json({
                 success: false,
                 message: "user already registered."
             })
         }
-        const hashedPassword = await argon2.hash("@dmin124");
-
+        const hashedPassword = await argon2.hash(password);
+        //create user
         const newuserRecord = await models.users.create({
             username,
             password: hashedPassword,
@@ -68,21 +80,20 @@ const signUp = async (req, res) => {
 
         delete newuserRecord.password;
         const payload = {
-            id:newuserRecord.id,
-            username:newuserRecord.username,
-            userType:newuserRecord.userType
+            id: newuserRecord.id,
+            username: newuserRecord.username,
+            userType: newuserRecord.userType
         }
         const token = generateToken(payload);
-        return res.status(200).json({ success: true, data: { user:payload, token } });
-        
+        return res.status(200).json({ success: true, data: { user: payload, token } });
+
     } catch (e) {
-        console.log(e);
         return res.status(500).json({
             success: false,
             message: "System error, something went wrong"
         })
     }
-   
+
 }
 
 module.exports = {

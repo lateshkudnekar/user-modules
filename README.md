@@ -14,14 +14,14 @@ npx sequelize db:seed:all // create admin( username:admin, password:@dmin12) use
 
 ```
 
-### Admin apis
+### Admin apis (post apis)
 - http://143.110.183.85:3001/api/v1/admin/sign-in (params: username:admin, password:@dmin12)
 - http://143.110.183.85:3001/api/v1/admin/assign-module (params: userID, moduleId)
 - http://143.110.183.85:3001/api/v1/admin/unassign-module (params: userID, moduleId)
 - http://143.110.183.85:3001/api/v1/admin/get-all-modules
 - http://143.110.183.85:3001/api/v1/admin/list-users
 
-### User apis
+### User apis (post apis)
 - http://143.110.183.85:3001/api/v1/auth/sign-in (params: username, password)
 - http://143.110.183.85:3001/api/v1/auth/sign-up (params: username, password)
 - http://143.110.183.85:3001/api/v1/auth/get-modules
